@@ -1,0 +1,20 @@
+<script>
+  const log = console.log;
+</script>
+
+<script>
+  /**
+   * 전개연산자도 이터러블/이터레이터 프로토콜을 따르는 객체를 전개할 수 있다.
+   */
+  const a = [1, 2];
+  // a[Symbol.iterator] = null;
+
+  const map = new Map([
+    ['a', 1],
+    ['b', 2],
+    ['c', 3],
+  ]);
+  const set = new Set([1, 2, 3]);
+
+  log([...a, ...[3, 4], ...map.keys(), ...set]);
+</script>

@@ -1,0 +1,48 @@
+<script>
+  const log = console.log;
+</script>
+
+# map
+<script>
+  const products = [
+    { name: '반팔티', price: 15000 },
+    { name: '긴팔티', price: 20000 },
+    { name: '핸드폰케이스', price: 15000 },
+    { name: '후드티', price: 30000 },
+    { name: '바지', price: 25000 },
+  ];
+</script>
+
+<script>
+  const map = (f, iter) => {
+    let res = [];
+    for (const p of iter) {
+      res.push(f(p));
+    }
+    return res;
+  };
+
+  log(map((p) => p.name, products));
+  log(map((p) => p.price, products));
+</script>
+
+# 이터러블 프로토콜을 따른 map의 다형성
+<script>
+  // map 을 지원하지 않는 경우도 있다.
+  // log(document.querySelectorAll('*').map((el) => el.nodeName));
+
+  /**
+   * 이터러블 프로토콜을 따르면 사용자 정의한 map 함수를 사용할 수 있다.
+   * 그리고 다른 헬퍼 함수들과 조합해서 사용할 수 있다.
+   * 클래스나 프로토 타입에 정의된 map 함수를 사용하는 것 보다
+   * 다형성이 높고 유연하다.
+   */
+  log(map((el) => el.nodeName, document.querySelectorAll('*')));
+
+  function* gen() {
+    yield 2;
+    if (false) yield 3;
+    yield 4;
+  }
+  log(map((a) => a * a, gen()));
+</script>
