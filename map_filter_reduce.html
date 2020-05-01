@@ -1,0 +1,70 @@
+<script src="./lib/fx.js"></script>
+
+<script>
+  const products = [
+    { name: '반팔티', price: 15000 },
+    { name: '긴팔티', price: 20000 },
+    { name: '핸드폰케이스', price: 15000 },
+    { name: '후드티', price: 30000 },
+    { name: '바지', price: 25000 },
+  ];
+</script>
+
+<script>
+  const add = (a, b) => a + b;
+  log(
+    reduce(
+      add,
+      map(
+        (p) => p.price,
+        filter((p) => p.price < 20000, products)
+      )
+    )
+  );
+</script>
+
+<script>
+  console.clear();
+  // 함수를 값으로 전달하기 때문에 평가되는 시점을 사용자가 정할 수 있다.
+  // go 함수는 값과 함수를 전달해 즉시 평가한다.
+  // const go = (...args) => reduce((a, f) => f(a), args);
+  go(
+    0,
+    (a) => a + 1,
+    (a) => a + 10,
+    (a) => a + 100,
+    log
+  );
+
+  // 첫 번째 값이 2개 이상의 인자를 필요로 하는 경우
+  go(
+    add(0, 1),
+    (a) => a + 1,
+    (a) => a + 10,
+    (a) => a + 100,
+    log
+  );
+</script>
+
+<script>
+  console.clear();
+  // pipe 는 함수들이 나열되어 있는 합성된 함수를 리턴하는 함수이다.
+  // 내부에서 go 를 사용하는 함수
+  // 첫 번째 값이 2개 이상의 인자를 필요로 하는 경우도 다루도록 만듬.
+  // const pipe = (f, ...fs) => (...as) => go(f(...as), ...fs);
+
+  const f = pipe(
+    (a) => a + 1,
+    (a) => a + 10,
+    (a) => a + 100
+  );
+
+  const f2 = pipe(
+    (a, b) => a + b,
+    (a) => a + 10,
+    (a) => a + 100
+  );
+
+  log(f(0));
+  log(f2(1, 3));
+</script>
