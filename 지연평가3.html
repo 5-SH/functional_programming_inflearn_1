@@ -1,0 +1,50 @@
+<script src="./lib/fx.js"></script>
+## 결과를 만드는 함수 reduce, take
+
+### reduce
+
+<script>
+  /**
+   * map,  filter => iterable 한 값의 원소를 꺼내서 함수를 합성
+   * [a, b, c, ...] => a -> f(a)
+   * 배열, iterable 한 형태를 유지한다.
+   * => 지연성을 가질 수 있는 함수.
+   * reduce, take => iterable 한 값을 꺼내서 더하거나 뺀다.
+   * [a, b, c, ...] => abc...
+   * 배열,iterable 한 형태를 깨트린다.
+   * => 결과를 만드는 함수, 연산의 시작점을 알리는 함수
+   */
+
+  const join = curry((sep = ", ", iter) => reduce((a, b) => `${a}${sep}${b}`, iter))
+
+  const queryStr = pipe(
+    Object.entries,
+    map(([k, v]) => `${k}=${v}`),
+    join('&')
+  )
+
+  log(queryStr({ limit: 10, offest: 10, type: 'notice' }))
+
+  L.entries = function *(obj) {
+    for (const k in obj) yield [k, obj[k]];
+  };
+
+  const lazyQueryStr = pipe(
+    L.entries,
+    L.map(([k, v]) => `${k}=${v}`),
+    join('&')
+  )
+
+  log(lazyQueryStr({ limit: 10, offest: 10, type: 'notice' }))
+
+  function *a() {
+    yield 10;
+    yield 11;
+    yield 12;
+    yield 13;
+    yield 14;
+  }
+
+  // log(a().join(''));
+  log(join(' - ', a()));
+</script>

@@ -1,0 +1,39 @@
+<script src="./lib/fx.js"></script>
+
+### range, map, filter, take, reduce 중첩 사용
+<script>
+  console.clear();
+
+  /**
+   * [0, 1, 2, 3, 4, 5, 6, 7, 8, ...]
+   * [10, 11, 12, ...]
+   * [11, 13, 15, ...]
+   * [11, 13]
+   * =
+   * [0       [1
+   *  10       11
+   *  false]   true] ...
+   */
+
+  go(range(10),
+    map(n => n + 10), 
+    filter(n => n % 2), 
+    take(2),
+    log);
+
+  go(L.range(10),
+    L.map(n => n + 10), 
+    L.filter(n => n % 2), 
+    take(2),
+    log);
+
+</script>
+
+### map, filter 계열 함수들이 가지는 결합 법칙 
+  - 사용하는 데이터가 무엇이든지 
+  - 사용하는 보조 함수가 순수 함수라면 무엇이든지 
+  - 아래와 같이 결합한다면 두 다 결과가 같다. 
+  
+[[mapping, mapping],[filtering, filtering], [mapping, mapping]]
+=
+[[mapping, filtering, mapping], [mapping, filtering, mapping]]
