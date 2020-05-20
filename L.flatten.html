@@ -1,0 +1,40 @@
+<script src="./lib/fx.js"></script>
+
+## L.flatten
+<script>
+  /** 
+   * 복잡한 구조의 배열을 모두 펼쳐서 하나의 배열로 만드는
+   * 이터레이터를 반환하는 함수
+   * 그리고 지연적으로 동작
+   */
+  log([...[1, 2], 3, 4, ...[5, 6], ...[7, 8, 9]]);
+
+  const isIterable = a => a && a[Symbol.iterator];
+
+  L.flatten = function *(iter) {
+    for (const a of iter) {
+      if (isIterable(a)) {
+        for (const b of a) yield b;
+      } else yield a;
+    }
+  };
+
+  let it = L.flatten([[1, 2], 3, 4, [5, 6], [7, 8, 9]]);
+  
+  // log(it.next());
+  // log(it.next());
+  // log(it.next());
+  // log(it.next());
+  // log([...it]);
+  log(take(3, it));
+
+  // 즉시평가 flatten
+  const flatten = pipe(L.flatten, takeAll);
+  log(flatten([[1, 2], 3, 4, [5, 6], [7, 8, 9]]));
+</script>
+
+## L.flatMap
+
+<script>
+
+</script>
