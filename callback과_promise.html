@@ -3,16 +3,16 @@
 # Promise
 
 ## 일급
-<script>
+<script type="module">
   function add10(a, callback) {
     setTimeout(() => callback(a + 10), 100);
   }
 
-  add10(5, res => {
+  var a = add10(5, res => {
     add10(res, res => {
       add10(res, res => {
         add10(res, res => {
-          log(res);
+          // log(res);
         })
       })
     })
@@ -21,25 +21,94 @@
   function add20(a) {
     return new Promise(resolve => setTimeout(() => resolve(a + 20), 100));
   }
-
-  add20(5)
-    .then(add20)
-    .then(add20)
-    .then(add20)
-    .then(log);
+  
+  var b = add20(5)
+  .then(add20)
+  .then(add20)
+  .then(add20)
+  // .then(log);
+  
+  // log(`callback : ${a}`);
+  // log(`Promise : ${b}`);
+  
+  /** 
+   * Promise 의 callback 과 차이점은 then method 로 결과를 꺼내보는 것이 아니라
+   * 비동기 상황을 일급 값으로 다룰 수 있도록 하는 것이 가장 큰 차이점이다.
+   * Promise 는 대기, 성공, 실패를 다루는 일급 값으로 이루어져 있다.
+   * 
+   * callback 는 비동기 상황을 코드로만 표현하지만 
+   * Promise 는 비동기 상황에 대한 값을 만들어서 return 을 하고 있다. -> Promsie 는 일급
+   * 
+   * callback 은 실행하고 나면 할 수 있는게 없지만, 
+   * Promise 는 실행 이후 하고싶은 일을 추가할 수 있다.
+   */ 
 </script>
 
 ## 일급 활용
-<script>
+<script type="module">
+  const delay100 = a => new Promise(resolve => setTimeout(() => resolve(a), 100));
 
+  const go1 = (a, f) => a instanceof Promise ? a.then(f) : f(a);
+  const add5 = a => a + 5;
+  
+  const n1 = 10;
+  // go1(go1(10, add5), log);
+
+  const n2 = delay100(10);
+  // go1(go1(n2, add5), log);
 </script>
 
 ## Composition
-<script>
+<script type="module">
+  /** 
+   * 함수 합성 f . g : f(g(x))
+   * 안전한 함수 합성을 위한 도구 : 모나드
+   * js 는 동적 타입의 언어 -> 모나드를 직접적으로 활용하지 않지만,
+   * 안전한 함수 합성을 위해 알아두는게 좋다.
+   * 
+   * 모나드 : 컨테이너에 어떤 값이 있고([1]) 그 값은 컨테이너에 담겨 있어서
+   * 안전하게 함수 합성을 할 수 있다.
+   */ 
 
+  const g = a => a + 1;
+  const f = a => a * a;
+
+  log(f(g(1)));
+  /** 
+   * 잘못된 값이 들어가면 함수가 평가되어 잘못된 값을 return 한다.
+   * => 안전한 함수 합성이 아니다.
+   * -> 어떤 값이 들어올지 모르거나 값이 있을지 없을지 모르는 환경에서 함수합성
+   * => 모나드
+   */ 
+  log(f(g()));
+
+  /** 
+   * array(컨테이너, [1]) 는 도구일 뿐 실제 출력되는 결론이 아니다.
+   * [1].map(g).map(f) 까지 평가해 의미있는 값이라면
+   * forEach 문을 통해 그 값을 표현한다.
+   */ 
+  Array.of(1).map(g).map(f).forEach(r => log(r));
+  [].map(g).map(f).forEach(r => log(r));
+
+  /** 
+   * Promise 로 컨테이너를 만들고 값을 넣는다. 
+   * 그리고 then 을 이용해 함수를 합성한다.
+   * => Promise 는 비동기로 일어나는 상황을 안전하게 합성하기 위한 함수.
+   * 
+   * 대신 Promise 는 Array 와 관점이 다르다.
+   * Promise 는 안에 값이 있거나 없거나에 따라 안전한 함수합성을 만드는 것이 아니라
+   * 비동기 상황에서 함수합성을 안전하게 하기 위해 만든 것이다.
+   * -> 함수를 합성하는 시점을 안전하게 만드는 모나드
+   */
+  Promise.resolve(2).then(g).then(f).then(r => log(r));
+  Promise.resolve().then(g).then(f).then(r => log(r));
+
+  new Promise(resolve => 
+    setTimeout(() => resolve(2), 100))
+    .then(g).then(f).then(r => log(r));
 </script>
 
 ## Klesili Composition
-<script>
+<script type="module">
 
 </script>
