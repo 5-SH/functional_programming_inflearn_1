@@ -1,0 +1,45 @@
+<script src="./lib/fx.js"></script>
+
+# Promise
+
+## 일급
+<script>
+  function add10(a, callback) {
+    setTimeout(() => callback(a + 10), 100);
+  }
+
+  add10(5, res => {
+    add10(res, res => {
+      add10(res, res => {
+        add10(res, res => {
+          log(res);
+        })
+      })
+    })
+  });
+
+  function add20(a) {
+    return new Promise(resolve => setTimeout(() => resolve(a + 20), 100));
+  }
+
+  add20(5)
+    .then(add20)
+    .then(add20)
+    .then(add20)
+    .then(log);
+</script>
+
+## 일급 활용
+<script>
+
+</script>
+
+## Composition
+<script>
+
+</script>
+
+## Klesili Composition
+<script>
+
+</script>
