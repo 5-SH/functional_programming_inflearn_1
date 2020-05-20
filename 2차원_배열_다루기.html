@@ -1,0 +1,23 @@
+<script src="./lib/fx.js"></script>
+
+## 2차원 배열 다루기
+<script>
+  const arr = [
+    [1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [9, 10]
+  ];
+
+  const add = (a, b) => a + b;
+
+  go(arr,
+    L.flatten,
+    L.filter(a => a % 2),
+    L.map(a => a * a),
+    take(4),
+    reduce(add),
+    log);
+
+</script>
+

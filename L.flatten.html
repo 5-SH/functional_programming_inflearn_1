@@ -34,14 +34,14 @@
 
 ## L.deepFlat
 <script>
-  L.deepLfat = function *f(iter) {
+  L.deepLflat = function *f(iter) {
     for (const a of iter) {
       if (isIterable(a)) yield *f(a);
       else yield a;
     }
   }
 
-  log([...L.deepLfat([1, [2, [3, 4], [[5]]]])]);
+  log([...L.deepLflat([1, [2, [3, 4], [[5]]]])]);
 </script>
 
 ## L.flatMap
