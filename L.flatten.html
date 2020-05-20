@@ -13,13 +13,12 @@
 
   L.flatten = function *(iter) {
     for (const a of iter) {
-      if (isIterable(a)) {
-        for (const b of a) yield b;
-      } else yield a;
+      if (isIterable(a)) yield *a
+      else yield a;
     }
   };
 
-  let it = L.flatten([[1, 2], 3, 4, [5, 6], [7, 8, 9]]);
+  var it = L.flatten([[1, 2], 3, 4, [5, 6], [7, 8, 9]]);
   
   // log(it.next());
   // log(it.next());
@@ -33,8 +32,43 @@
   log(flatten([[1, 2], 3, 4, [5, 6], [7, 8, 9]]));
 </script>
 
-## L.flatMap
-
+## L.deepFlat
 <script>
+  L.deepLfat = function *f(iter) {
+    for (const a of iter) {
+      if (isIterable(a)) yield *f(a);
+      else yield a;
+    }
+  }
 
+  log([...L.deepLfat([1, [2, [3, 4], [[5]]]])]);
+</script>
+
+## L.flatMap
+<script>
+  console.clear();
+  log([[1, 2], [3, 4], [5, 6, 7]].flatMap(a => a));
+  log([[1, 2], [3, 4], [5, 6, 7]].flatMap(a => a.map(a => a * a)));
+  
+  // map 순회 후 -> flatten 동작, 비효율 적으로 동작 (모든 원소 순회하면 같은 시간복잡도)
+  log(flatten([[1, 2], [3, 4], [5, 6, 7]].map(a => a.map(a => a * a))));
+
+  L.flatMap = curry(pipe(L.map, L.flatten));
+  const flatMap = curry(pipe(L.map, flatten));
+
+  var it = L.flatMap(map(a => a * a), [[1, 2], [3, 4], [5, 6, 7]]);
+  // log(it.next());
+  // log(it.next());
+  // log(it.next());
+  // log(it.next());
+  // log([...it]);
+
+  log(flatMap(map(a => a * a), [[1, 2], [3, 4], [5, 6, 7]]));
+
+  log(...L.flatMap(L.range, map(a => a + 1, [1, 2, 3])));
+  var it = L.flatMap(L.range, map(a => a + 1, [1, 2, 3]));
+  log(it.next());
+  log(it.next());
+
+  log(take(3, L.flatMap(L.range, map(a => a + 1, [1, 2, 3]))));
 </script>
