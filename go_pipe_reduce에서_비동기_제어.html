@@ -9,5 +9,11 @@
     a => a + 10000, 
     log).catch(a => log(a));
 
+</script>
 
+## Promise.then 의 중요한 규칙
+<script>
+  console.clear();
+  // Promise 가 아무리 중첩되어도 한 번의 then 으로 값을 꺼낼 수 있다.
+  Promise.resolve(Promise.resolve(Promise.resolve(1))).then(a => log(a));
 </script>
