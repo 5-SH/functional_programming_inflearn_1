@@ -1,0 +1,39 @@
+<script src="./lib/fx.js"></script>
+
+## 지연된 함수열을 병렬적으로 평가하기 - C.reduce, C.take
+<script>
+  const C = {};
+  function noop() {}
+  const catchNoop = arr => 
+    (arr.forEach(a => a instanceof Promise ? a.catch(noop) : a), arr);
+
+  C.reduce = curry((f, acc, iter) => {
+    const iter2 = catchNoop(iter ? [...iter] : [...acc]);
+    return iter ?
+      reduce(f, acc, iter2) :
+      reduce(f, iter2);
+  });
+
+  C.take = curry((l, iter) => take(l, catchNoop([...iter])));
+    
+  
+  const add = (a, b) => a + b;
+  const delay1000 = a => new Promise(resolve => 
+    setTimeout(() => resolve(a), 1000));
+
+  console.time();
+  go([1, 2, 3, 4, 5, 6, 7 ,8, 9],
+    L.map(a => delay1000(a * a)),
+    L.filter(a => delay1000(a % 2)),
+    L.map(a => delay1000(a * a)),
+    C.take(2),
+    C.reduce(add),
+    log,
+    _ => console.timeEnd());
+
+</script>
+
+## 즉시 병렬적으로 평가하기 - C.map, C.filter
+<script>
+
+</script>
