@@ -2,18 +2,18 @@
 
 ## 지연된 함수열을 병렬적으로 평가하기 - C.reduce, C.take
 <script>
-  const C = {};
-  function noop() {}
-  const catchNoop = arr => 
-    (arr.forEach(a => a instanceof Promise ? a.catch(noop) : a), arr);
+  // const C = {};
+  // function noop() {}
+  // const catchNoop = arr => 
+  //   (arr.forEach(a => a instanceof Promise ? a.catch(noop) : a), arr);
 
-  C.reduce = curry((f, acc, iter) => {
-    const iter2 = catchNoop(iter ? [...iter] : [...acc]);
-    return iter ?
-      reduce(f, acc, iter2) :
-      reduce(f, iter2);  });
+  // C.reduce = curry((f, acc, iter) => {
+  //   const iter2 = catchNoop(iter ? [...iter] : [...acc]);
+  //   return iter ?
+  //     reduce(f, acc, iter2) :
+  //     reduce(f, iter2);  });
 
-  C.take = curry((l, iter) => take(l, catchNoop([...iter])));
+  // C.take = curry((l, iter) => take(l, catchNoop([...iter])));
   
   const add = (a, b) => a + b;
   const delay1000 = a => {
@@ -37,10 +37,32 @@
 ## 즉시 병렬적으로 평가하기 - C.map, C.filter
 <script>
   console.clear();
-  C.takeAll = C.take(Infinity);
-  C.map = curry(pipe(L.map, C.takeAll));
-  C.filter = curry(pipe(L.filter, C.takeAll));
+  // C.takeAll = C.take(Infinity);
+  // C.map = curry(pipe(L.map, C.takeAll));
+  // C.filter = curry(pipe(L.filter, C.takeAll));
 
-  C.map(a => delay1000(a * a), [1, 2, 3, 4]).then(log);
-  C.filter(a => delay1000(a % 2), [1, 2, 3, 4]).then(log);
+  // C.map(a => delay1000(a * a), [1, 2, 3, 4]).then(log);
+  // C.filter(a => delay1000(a % 2), [1, 2, 3, 4]).then(log);
+</script>
+
+## 즉시, 지연, Promise, 병렬적 조합하기
+
+<script>
+  // const delay500 = a => a;
+  const delay500 = (a, name) => new Promise(resolve => {
+    log(name, a);
+    setTimeout(() => resolve(a), 500);
+  });
+
+  console.time();
+  go([1, 2, 3, 4, 5, 6, 7, 8],
+    L.map(a => delay500(a * a, 'map 1')),
+    C.filter(a => delay500(a % 2, 'filter 2')),
+    L.map(a => delay500(a + 1, 'map 3')),
+    take(3),
+    // C.reduce(add),
+    log,
+    _ => console.timeEnd()
+  );
+
 </script>
